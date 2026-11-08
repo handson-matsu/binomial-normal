@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173b67">
+  <meta name="description" content="二項分布と正規分布を重ねて比較する、授業向けのインタラクティブ教材。連続補正と標準化にも対応。">
+  <title>二項分布と正規分布 | 分布のかたちを探る</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div><p class="eyebrow">PROBABILITY LAB <span>確率の実験室</span></p><h1>二項分布と正規分布</h1><p class="subtitle">試行を重ねると、分布のかたちはどう変わる？</p></div>
+    <div class="header-formula" aria-label="二項分布を正規分布で近似">B(n, p) <span>≈</span> N(np, np(1−p))</div>
+  </header>
+
+  <section class="panel parameters" aria-label="パラメータ設定">
+    <div class="parameter"><div class="parameter-heading"><label for="nInput">試行回数 <i>n</i></label><input id="nInput" type="number" min="1" max="1000" step="1" value="20" inputmode="numeric"></div><input id="nSlider" aria-label="試行回数 n" type="range" min="1" max="1000" value="20"><div class="range-labels"><span>1</span><span>1,000 回</span></div><div class="presets" aria-label="試行回数のプリセット"><button data-n="10">10</button><button data-n="20">20</button><button data-n="50">50</button><button data-n="100">100</button><button data-n="500">500</button><button data-n="1000">1000</button></div></div>
+    <div class="parameter"><div class="parameter-heading"><label for="pInput">成功確率 <i>p</i></label><input id="pInput" type="number" min="0.01" max="0.99" step="0.01" value="0.5" inputmode="decimal"></div><input id="pSlider" aria-label="成功確率 p" type="range" min="0.01" max="0.99" step="0.01" value="0.5"><div class="range-labels"><span>0.01</span><span>0.99</span></div><p class="parameter-hint">p = 0.5 で左右対称。端に近づけて、歪みを観察しよう。</p></div>
+
+  </section>
+
+
+
+  <section class="panel graph-panel" aria-labelledby="graphTitle">
+    <div class="section-heading graph-heading"><h2 id="graphTitle">分布を重ねて比べる</h2><div class="animation"><h2>n を増やして観察</h2><p>10 → 200 <span>・ p は固定</span></p><div class="animation-buttons"><button id="play" class="primary">▶ 再生</button><button id="reset">↺ リセット</button></div><label class="speed" for="speed">速さ <select id="speed"><option value="2">ゆっくり · 2回/秒</option><option value="10" selected>標準 · 10回/秒</option><option value="30">速い · 30回/秒</option></select></label><div class="progress"><div id="animationProgress"></div></div></div></div>
+    <div class="graph-toolbar"><div class="segmented" role="group" aria-label="横軸の表示"><button id="normalMode" aria-pressed="true">通常表示</button><button id="standardMode" aria-pressed="false">標準化表示</button></div><div class="checkboxes"><label><input type="checkbox" id="showCurve" checked>正規曲線を表示</label><label><input type="checkbox" id="showCorrection" checked>連続補正を表示</label></div><button id="save" class="save-button">↓ グラフをPNG保存</button></div>
+    <div class="legend"><span><b class="blue-key"></b>二項分布 B(n, p)</span><span id="curveLegend"><b class="red-key"></b>正規分布 N(μ, σ²)</span><span id="areaLegend"><b class="area-key"></b>選択した k の連続補正</span></div>
+    <div class="canvas-wrap"><canvas id="chart" tabindex="0" role="img" aria-label="二項分布と正規分布のグラフ。左右の矢印キーで成功回数を選択できます。"></canvas></div>
+    <div class="range-toolbar"><div class="range-buttons"><button id="focusRange">平均周辺</button><button id="fullRange">全範囲</button></div><div class="custom-range"><span>横軸の範囲</span><label><span class="sr-only">横軸の最小値</span><input id="xMin" type="number" step="any"></label><span>〜</span><label><span class="sr-only">横軸の最大値</span><input id="xMax" type="number" step="any"></label><button id="applyRange">適用</button></div></div>
+    <p id="rangeMessage" class="graph-note"></p><p id="rangeError" class="error" role="alert"></p>
+    <p id="modeExplanation" class="explanation"></p>
+  </section>
+
+  <section class="statistics" aria-label="分布の統計量">
+    <div><span>平均 μ = np</span><strong id="mean">10</strong></div><div><span>分散 σ² = np(1−p)</span><strong id="variance">5</strong></div><div><span>標準偏差 σ = √np(1−p)</span><strong id="sd">2.2361</strong></div><div class="approx-check"><span>近似を考える指標</span><strong id="conditions"></strong><small id="approxNote"></small></div>
+  </section>
+
+  <section class="selection panel" aria-labelledby="selectionTitle"><div class="selection-control"><p class="eyebrow">SELECTED VALUE</p><h2 id="selectionTitle">成功回数 <label for="selectedK">k =</label> <input id="selectedK" type="number" min="0" max="20" value="10" inputmode="numeric"></h2><span id="selectedZ"></span></div><div class="selected-stat"><span>二項分布の確率 P(X = k)</span><strong id="exactValue"></strong><small id="exactPercent"></small></div><div class="selected-stat"><span>正規近似値（連続補正あり）</span><strong id="approxValue"></strong><small id="intervalLabel"></small></div><div class="selected-stat difference"><span>近似値 − 二項確率</span><strong id="difference"></strong><small>棒・表をタップして選択</small></div></section>
+
+  <section class="panel table-panel" aria-labelledby="tableTitle"><div class="section-heading"><div><p class="eyebrow">02 / PROBABILITY TABLE</p><h2 id="tableTitle">確率分布表</h2></div><label class="precision" for="precision">小数点以下 <select id="precision"><option value="4">4桁</option><option value="6" selected>6桁</option></select></label></div><div class="table-caption"><p>左右にスクロールして、すべての k を確認できます。</p><button id="scrollSelected">選択列へ移動 ↔</button></div><div id="tableScroller" class="table-scroller" tabindex="0" role="region" aria-label="確率分布表。横方向にスクロールできます。"><table id="distributionTable"><caption class="sr-only">成功回数ごとの二項確率と連続補正を用いた正規近似値</caption><tbody></tbody></table></div><div class="table-footer"><span id="sumCheck"></span><span id="columnCount"></span></div></section>
+
+  <aside class="learning-note"><div class="note-mark">i</div><div><h2>高さと面積を、区別して見てみよう。</h2><p>青い棒は各整数の確率、赤い線は正規分布の<strong>確率密度</strong>です。連続補正では k − 0.5 から k + 0.5 までの曲線の下の<strong>面積</strong>を二項確率と比べます。np と n(1−p) が十分大きいほど、一般に近似がよくなります。</p></div></aside>
+  <footer>PROBABILITY LAB <span>二項分布から、正規分布へ。</span><span id="status" role="status" aria-live="polite"></span></footer>
+</main>
+</body>
+</html>
